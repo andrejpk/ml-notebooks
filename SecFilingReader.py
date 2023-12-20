@@ -1,17 +1,12 @@
 import asyncio
 import logging
-import os
-import pathlib
 from llama_index import Document
-from llama_index.readers.web import SimpleWebPageReader
 from llama_index.readers.base import BaseReader
-from typing import Any, Callable, Dict, List, Optional, Tuple, TypedDict
-import tempfile
+from typing import Any, Dict, List, Optional, TypedDict
 import html2text
 
 from SmartEdgarClient import FilingInfo, SmartEdgarClient
 
-from llama_index.readers.file.base import DEFAULT_FILE_READER_CLS
 
 class FilingDocumentRecord(TypedDict):
 	filingInfo: FilingInfo
@@ -23,9 +18,6 @@ class SecFilingReader(BaseReader):
 	A reader for SEC Edgar filings
 
 	Retrieves data from the SEC Edgar API
-	
-	Examples:
-
 	"""
 	def __init__(
 				self, 
@@ -75,7 +67,7 @@ class SecFilingReader(BaseReader):
 
 
 	def load_data(self, cik: str, forms: Optional[List[str]] = None, filing_date_min = None) -> List[Document]:
-		"""Gets the filings for the specified companies"""""
+		"""Gets the filings for the specified company"""""
 		filings = self._load_filing_data(cik, forms, filing_date_min)
 
 		return filings

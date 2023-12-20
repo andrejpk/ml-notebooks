@@ -3,15 +3,11 @@ import logging
 import sys
 
 from llama_index.llms import OpenAI
-from llama_index.agent import OpenAIAgent
 from llama_index.agent import ReActAgent
+from llama_index.tools import QueryEngineTool, ToolMetadata
 
 from secIndex import get_edgar_index
 from utils import get_env_var
-from langchain.agents import initialize_agent
-# from llama_index.langchain_helpers.agents import IndexToolConfig, LlamaIndexTool, LlamaToolkit, create_llama_agent
-# from llama_index.langchain_helpers.memory_wrapper import GPTIndexChatMemory
-from llama_index.tools import QueryEngineTool, ToolMetadata
 
 def create_filing_tool(cik: str, company_name: str):
 	index = get_edgar_index(cik)

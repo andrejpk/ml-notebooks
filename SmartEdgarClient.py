@@ -1,12 +1,9 @@
-from functools import lru_cache
-import json
 from typing import Optional, List
 from sec_edgar_api import EdgarClient
 from cache_decorator import Cache
 import requests
 import logging
 from typing import TypedDict
-
 
 class FilingInfo(TypedDict):
 	accessionNumber: str
@@ -25,9 +22,13 @@ class FilingInfo(TypedDict):
 	primaryDocDescription: str
 
 class SmartEdgarClient:
+	"""
+	A caching warpper for the SEC Edgar API. It mostly uses the sec_edgar_api library, but adds caching and
+	a way to get the actual filing documents.
+	"""
 	def __init__(self, user_email):
 		self.user_email = user_email
-		self.user_agent = f"SEC Agent User {user_email}"
+		self.user_agent = f"SEC Agent User <{user_email}>"
 		self.client = EdgarClient(user_agent=self.user_agent)
 
 	def toCik(self, cikValue):
