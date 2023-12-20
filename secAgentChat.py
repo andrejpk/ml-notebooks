@@ -1,6 +1,10 @@
 import os
-from llama_index import StorageContext, VectorStoreIndex, load_index_from_storage
+from llama_index import OpenAIEmbedding, StorageContext, VectorStoreIndex, ServiceContext, load_index_from_storage
+from llama_index.text_splitter import SentenceSplitter
 from SecFilingReader import SecFilingReader
+from llama_index.ingestion import IngestionPipeline
+from llama_index.text_splitter import TokenTextSplitter
+from llama_index.extractors import TitleExtractor, QuestionsAnsweredExtractor
 import dotenv
 import logging
 import sys
@@ -23,8 +27,28 @@ if __name__ == "__main__":
 	if not os.path.exists(storage_path):
 		# load the documents and create the index
 		print("Creating index")
-		documents = SecFilingReader(user_email=user_email).load_data(cik="0000789019", filing_date_min="2010-01-01", forms=["10-K", "10-Q", "8-K", "20-F"])
-		index = VectorStoreIndex.from_documents(documents)
+
+		logging.debug("Loading Documents")
+		documents = SecFilingReader(user_email=user_email).load_data(cik="0000789019", filing_date_min="2020-01-01", forms=["10-K"])
+		logging.debug(f"  Documents: {len(documents)}")
+
+		transformations = [
+			SentenceSplitter(),
+			TitleExtractor(),
+			OpenAIEmbedding()
+			]
+
+		pipeline = IngestionPipeline(
+			transformations=transformations,	
+		)
+		logging.debug("Documents -> Nodes")
+		nodes = pipeline.run(documents=documents)
+		logging.debug(f"  Nodes: {len(nodes)}")
+
+		logging.debug("Nodes -> Index")
+		index = VectorStoreIndex(nodes)
+		# index = VectorStoreIndex.from_documents(documents, transformations=transformations)
+
 		# store it for later
 		print("Storing index")
 		index.storage_context.persist(persist_dir=storage_path)
@@ -34,6 +58,8 @@ if __name__ == "__main__":
 		index = load_index_from_storage(storage_context)
 		print("Loaded index from storage")
 
+
+	# create the chat engine
 	engine = index.as_chat_engine()
 
 	print("Welcome to the SEC Chatbot. Type 'exit' to quit.")
