@@ -1,3 +1,6 @@
 llama-index
 spacy
 python-dotenv
+sec_edgar_api
+cache_decorator 
+html2text

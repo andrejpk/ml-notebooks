@@ -1,3 +1,4 @@
 data
 storage
 .env
+__pycache__
