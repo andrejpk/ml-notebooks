@@ -2,3 +2,4 @@ data
 storage
 .env
 __pycache__
+.venv

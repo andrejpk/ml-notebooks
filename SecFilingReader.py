@@ -30,16 +30,12 @@ class SecFilingReader(BaseReader):
 	def __init__(
 				self, 
 				user_email: str, 
-				filing_date_min: Optional[str] = None
 		):
 			"""
 			Initialize the SecFilingReader object.
 
 			Args:
-				ciks (List[str]): A list of CIKs (Central Index Keys) representing the companies to retrieve filings for.
 				user_email (str): The email address of the user.
-				filing_types (Optional[List[str]]): A list of filing types to filter the retrieved filings. Defaults to None.
-				filing_date_min (Optional[str]): The minimum filing date to filter the retrieved filings. Defaults to None.
 			"""
 			self.edgar_client = SmartEdgarClient(user_email)
 
